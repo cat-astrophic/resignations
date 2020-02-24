@@ -176,12 +176,12 @@ preds.cites <- c('Total.Docs.1year', 'Total.Docs...3years.', 'Total.Refs.', 'Tot
 
 IJSS.synth.data.cites <- dataprep(foo = IJSS, predictors = preds.cites, predictors.op = c('mean'),
                                 dependent = c('Cites...Doc...2years.'), unit.variable = c('ID'), time.variable = c('Year'),
-                                treatment.identifier = 30, controls.identifier = c(1:29, 31:448), time.predictors.prior = c(1999:2005),
+                                treatment.identifier = 30, controls.identifier = c(1:29, 31:408), time.predictors.prior = c(1999:2005),
                                 time.optimize.ssr = c(1999:2005), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
 CMAJ.synth.data.cites <- dataprep(foo = CMAJ, predictors = preds.cites, predictors.op = c('mean'), dependent = c('Cites...Doc...2years.'),
                                 unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 309,
-                                controls.identifier = c(1:308), time.predictors.prior = c(1999:2006),
+                                controls.identifier = c(1:308, 310:699), time.predictors.prior = c(1999:2006),
                                 time.optimize.ssr = c(1999:2006), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
 TOP.synth.data.cites <- dataprep(foo = TOP, predictors = preds.cites, predictors.op = c('mean'), dependent = c('Cites...Doc...2years.'),
@@ -203,12 +203,12 @@ JLA.synth.data.cites <- dataprep(foo = JLA, predictors = preds.cites, predictors
 
 IJSS.synth.data.SJR <- dataprep(foo = IJSS, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
                                 unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 30,
-                                controls.identifier = c(1:29, 31:448), time.predictors.prior = c(1999:2005),
+                                controls.identifier = c(1:29, 31:408), time.predictors.prior = c(1999:2005),
                                 time.optimize.ssr = c(1999:2005), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
 CMAJ.synth.data.SJR <- dataprep(foo = CMAJ, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
                                 unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 309,
-                                controls.identifier = c(1:308), time.predictors.prior = c(1999:2006),
+                                controls.identifier = c(1:308, 310:699), time.predictors.prior = c(1999:2006),
                                 time.optimize.ssr = c(1999:2006), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
 TOP.synth.data.SJR <- dataprep(foo = TOP, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
@@ -252,81 +252,121 @@ JLA.synth.out.SJR <- synth(data.prep.obj = JLA.synth.data.SJR)
 
 # Plotting the Synth results for citations
 
+postscript('C:/Users/User/Documents/Data/resignations/IJSS.cites.path.eps')
 path.plot(synth.res = IJSS.synth.out.cites, dataprep.res = IJSS.synth.data.cites, Ylab = 'Citations per Document',
           Xlab = 'Year', Legend = c('Intl. J. of Solids and Structures', 'Synthetic Control'),
-          Legend.position = 'top', Ylim = c(0,4))
+          Legend.position = 'topright', Ylim = c(0,4))
 abline(v = 2005)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/CMAJ.cites.path.eps')
 path.plot(synth.res = CMAJ.synth.out.cites, dataprep.res = CMAJ.synth.data.cites, Ylab = 'Citations per Document',
           Xlab = 'Year', Legend = c('CMAJ', 'Synthetic Control'),
-          Legend.position = 'top', Ylim = c(0,10))
+          Legend.position = 'topright', Ylim = c(0,10))
 abline(v = 2006)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/TOP.cites.path.eps')
 path.plot(synth.res = TOP.synth.out.cites, dataprep.res = TOP.synth.data.cites, Ylab = 'Citations per Document',
           Xlab = 'Year', Legend = c('Topology', 'Synthetic Control'),
-          Legend.position = 'top', Ylim = c(0,4))
+          Legend.position = 'topright', Ylim = c(0,4))
 abline(v = 2006)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/OE.cites.path.eps')
 path.plot(synth.res =OE.synth.out.cites, dataprep.res = OE.synth.data.cites, Ylab = 'Citations per Document',
           Xlab = 'Year', Legend = c('Organization & Environment', 'Synthetic Control'),
-          Legend.position = 'top', Ylim = c(0,10))
+          Legend.position = 'topleft', Ylim = c(0,10))
 abline(v = 2012)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/JLA.cites.path.eps')
 path.plot(synth.res = JLA.synth.out.cites, dataprep.res = JLA.synth.data.cites, Ylab = 'Citations per Document',
           Xlab = 'Year', Legend = c('J. Library Administration', 'Synthetic Control'),
           Legend.position = 'top', Ylim = c(0,2))
 abline(v = 2013)
+dev.off()
 
 # Plotting the Synth results for SJR
 
+postscript('C:/Users/User/Documents/Data/resignations/IJSS.SJR.path.eps')
 path.plot(synth.res = IJSS.synth.out.SJR, dataprep.res = IJSS.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
           Xlab = 'Year', Legend = c('Intl. J. of Solids and Structures', 'Synthetic Control'),
-          Legend.position = 'top', Ylim = c(0,4))
+          Legend.position = 'topright', Ylim = c(0,4))
 abline(v = 2005)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/CMAJ.SJR.path.eps')
 path.plot(synth.res = CMAJ.synth.out.SJR, dataprep.res = CMAJ.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
           Xlab = 'Year', Legend = c('CMAJ', 'Synthetic Control'),
           Legend.position = 'top', Ylim = c(0,10))
 abline(v = 2006)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/TOP.SJR.path.eps')
 path.plot(synth.res = TOP.synth.out.SJR, dataprep.res = TOP.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
           Xlab = 'Year', Legend = c('Topology', 'Synthetic Control'),
-          Legend.position = 'top', Ylim = c(0,4))
+          Legend.position = 'topright', Ylim = c(0,4))
 abline(v = 2006)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/OE.SJRs.path.eps')
 path.plot(synth.res =OE.synth.out.SJR, dataprep.res = OE.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
           Xlab = 'Year', Legend = c('Organization & Environment', 'Synthetic Control'),
-          Legend.position = 'top', Ylim = c(0,10))
+          Legend.position = 'topleft', Ylim = c(0,10))
 abline(v = 2012)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/JLA.SJR.path.eps')
 path.plot(synth.res = JLA.synth.out.SJR, dataprep.res = JLA.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
           Xlab = 'Year', Legend = c('J. Library Administration', 'Synthetic Control'),
           Legend.position = 'top', Ylim = c(0,2))
 abline(v = 2013)
+dev.off()
 
 # Plotting the gaps for citations
 
+postscript('C:/Users/User/Documents/Data/resignations/IJSS.cites.gaps.eps')
 gaps.plot(synth.res = IJSS.synth.out.cites, dataprep.res = IJSS.synth.data.cites)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/CMAJ.cites.gaps.eps')
 gaps.plot(synth.res = CMAJ.synth.out.cites, dataprep.res = CMAJ.synth.data.cites)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/TOP.cites.gaps.eps')
 gaps.plot(synth.res = TOP.synth.out.cites, dataprep.res = TOP.synth.data.cites)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/OE.cites.gaps.eps')
 gaps.plot(synth.res = OE.synth.out.cites, dataprep.res = OE.synth.data.cites)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/JLA.cites.gaps.eps')
 gaps.plot(synth.res = JLA.synth.out.cites, dataprep.res = JLA.synth.data.cites)
+dev.off()
 
 # Plotting the gaps for SJR
 
+postscript('C:/Users/User/Documents/Data/resignations/IJSS.SJR.gaps.eps')
 gaps.plot(synth.res = IJSS.synth.out.SJR, dataprep.res = IJSS.synth.data.SJR)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/CMAJ.SJR.gaps.eps')
 gaps.plot(synth.res = CMAJ.synth.out.SJR, dataprep.res = CMAJ.synth.data.SJR)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/TOP.SJR.gaps.eps')
 gaps.plot(synth.res = TOP.synth.out.SJR, dataprep.res = TOP.synth.data.SJR)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/OE.SJR.gaps.eps')
 gaps.plot(synth.res = OE.synth.out.SJR, dataprep.res = OE.synth.data.SJR)
+dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/JLA.SJR.gaps.eps')
 gaps.plot(synth.res = JLA.synth.out.SJR, dataprep.res = JLA.synth.data.SJR)
+dev.off()
 
 # Placebo testing
 
@@ -335,6 +375,8 @@ gaps.plot(synth.res = JLA.synth.out.SJR, dataprep.res = JLA.synth.data.SJR)
 
 
 
+
+### NEED TO FINISH WRITING THE CODE FOR gaps.plot PLOTS AND RUN THESE --- MISSING TITLES
 
 
 
