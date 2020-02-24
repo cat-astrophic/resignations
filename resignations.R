@@ -68,11 +68,18 @@ synth_ID_maker <- function(df) {
 
 # A helper function used to balance panels
 
-balanced_panel <- function(df,nyrs,idtop) {
+balanced_panel <- function(df,nyrs,idtop,idlin) {
   
   if (idtop == TRUE) { # truncate data set for Topology because it dies
     
     df <- df[which(df$Year < 2013),]
+    
+  }
+  
+  if (idlin == TRUE) { # truncate data set for J K-Theory because it dies
+    
+    df <- df[which(df$Year < 2018),]
+    df <- df[which(df$Year > 2008),]
     
   }
   
@@ -128,26 +135,26 @@ IJSS <- main_df[grepl('Applied Mathematics', main_df$Categories)
                 | grepl('Mechanics of Materials', main_df$Categories)
                 | grepl('Modeling and Simulation', main_df$Categories),]
 IJSS <- synth_ID_maker(IJSS)
-IJSS <- balanced_panel(IJSS,20,FALSE)
+IJSS <- balanced_panel(IJSS,20,FALSE,FALSE)
 
 # Canadian Medical Association Journal
 
 CMAJ <- main_df[grepl('Medicine \\(miscellaneous\\)', main_df$Categories),]
 CMAJ <- synth_ID_maker(CMAJ)
-CMAJ <- balanced_panel(CMAJ,20,FALSE)
+CMAJ <- balanced_panel(CMAJ,20,FALSE,FALSE)
 
 # Topology
 
 TOP <- main_df[grepl('Geometry and Topology', main_df$Categories),]
 TOP <- synth_ID_maker(TOP)
-TOP <- balanced_panel(TOP,14,TRUE)
+TOP <- balanced_panel(TOP,14,TRUE,FALSE)
 
 # Organization and Environment
 
 OE <- main_df[grepl('Environmental Science \\(miscellaneous\\)', main_df$Categories)
               | grepl('Organizational Behavior and Human Resource Management', main_df$Categories),]
 OE <- synth_ID_maker(OE)
-OE <- balanced_panel(OE,20,FALSE)
+OE <- balanced_panel(OE,20,FALSE,FALSE)
 
 # Journal of Library Administration
 
@@ -162,7 +169,21 @@ jla2008 <- c(11184, 4700152795, 'Journal of Library Administration', 'journal',
              'United States', 'Haworth Press Inc.', '1980-ongoing',
              'Library and Information Sciences (Q3); Public Administration (Q3)', 2008, 98)
 JLA <- rbind(JLA, setNames(jla2008, names(JLA)))
-JLA <- balanced_panel(JLA,20,FALSE)
+JLA <- balanced_panel(JLA,20,FALSE,FALSE)
+
+# Lingua
+
+LIN <- main_df[grepl('Language and Linguistics', main_df$Categories)
+               | grepl('Linguistics and Language', main_df$Categories),]
+LIN <- synth_ID_maker(LIN)
+LIN <- balanced_panel(LIN,20,FALSE,FALSE)
+
+# Journal of K-Theory
+
+JK <- main_df[grepl('Algebra and Number Theory', main_df$Categories)
+              | grepl('Geometry and Topology', main_df$Categories),]
+JK <- synth_ID_maker(JK)
+JK <- balanced_panel(JK,9,FALSE,TRUE)
 
 # Predictors for Synth
 
@@ -199,6 +220,16 @@ JLA.synth.data.cites <- dataprep(foo = JLA, predictors = preds.cites, predictors
                               controls.identifier = c(1:56), time.predictors.prior = c(1999:2013),
                               time.optimize.ssr = c(1999:2013), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
+LIN.synth.data.cites <- dataprep(foo = LIN, predictors = preds.cites, predictors.op = c('mean'), dependent = c('Cites...Doc...2years.'),
+                                 unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 59,
+                                 controls.identifier = c(1:58, 60:75), time.predictors.prior = c(1999:2015),
+                                 time.optimize.ssr = c(1999:2015), unit.names.variable = 'Title', time.plot = c(1999:2018))
+
+JK.synth.data.cites <- dataprep(foo = JK, predictors = preds.cites, predictors.op = c('mean'), dependent = c('Cites...Doc...2years.'),
+                                 unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 69,
+                                 controls.identifier = c(1:68, 70:73), time.predictors.prior = c(2009:2014),
+                                 time.optimize.ssr = c(2009:2014), unit.names.variable = 'Title', time.plot = c(2009:2017))
+
 # Creating the input data objects for Synth using dataprep() and SJR predictors
 
 IJSS.synth.data.SJR <- dataprep(foo = IJSS, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
@@ -226,6 +257,16 @@ JLA.synth.data.SJR <- dataprep(foo = JLA, predictors = preds.SJR, predictors.op 
                                controls.identifier = c(1:56), time.predictors.prior = c(1999:2013),
                                time.optimize.ssr = c(1999:2013), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
+LIN.synth.data.SJR <- dataprep(foo = LIN, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
+                                 unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 59,
+                                 controls.identifier = c(1:16, 18:34, 36:58, 60:74), time.predictors.prior = c(1999:2015),
+                                 time.optimize.ssr = c(1999:2015), unit.names.variable = 'Title', time.plot = c(1999:2018))
+
+JK.synth.data.SJR <- dataprep(foo = JK, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
+                                unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 69,
+                                controls.identifier = c(1:68), time.predictors.prior = c(2009:2014),
+                                time.optimize.ssr = c(2009:2014), unit.names.variable = 'Title', time.plot = c(2009:2017))
+
 # Using Synth to create synthetic controls for each treatment group for citations
 
 IJSS.synth.out.cites <- synth(data.prep.obj = IJSS.synth.data.cites)
@@ -238,6 +279,10 @@ OE.synth.out.cites <- synth(data.prep.obj = OE.synth.data.cites)
 
 JLA.synth.out.cites <- synth(data.prep.obj = JLA.synth.data.cites)
 
+LIN.synth.out.cites <- synth(data.prep.obj = LIN.synth.data.cites)
+
+JK.synth.out.cites <- synth(data.prep.obj = JK.synth.data.cites)
+
 # Using Synth to create synthetic controls for each treatment group for citations
 
 IJSS.synth.out.SJR <- synth(data.prep.obj = IJSS.synth.data.SJR)
@@ -249,6 +294,10 @@ TOP.synth.out.SJR <- synth(data.prep.obj = TOP.synth.data.SJR)
 OE.synth.out.SJR <- synth(data.prep.obj = OE.synth.data.SJR)
 
 JLA.synth.out.SJR <- synth(data.prep.obj = JLA.synth.data.SJR)
+
+LIN.synth.out.SJR <- synth(data.prep.obj = LIN.synth.data.SJR)
+
+JK.synth.out.SJR <- synth(data.prep.obj = JK.synth.data.SJR)
 
 # Plotting the Synth results for citations
 
@@ -287,6 +336,20 @@ path.plot(synth.res = JLA.synth.out.cites, dataprep.res = JLA.synth.data.cites, 
 abline(v = 2013)
 dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/LIN.cites.path.eps')
+path.plot(synth.res = LIN.synth.out.cites, dataprep.res = LIN.synth.data.cites, Ylab = 'Citations per Document',
+          Xlab = 'Year', Legend = c('Lingua', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,2))
+abline(v = 2015)
+dev.off()
+
+postscript('C:/Users/User/Documents/Data/resignations/JK.cites.path.eps')
+path.plot(synth.res = JK.synth.out.cites, dataprep.res = JK.synth.data.cites, Ylab = 'Citations per Document',
+          Xlab = 'Year', Legend = c('J. of K-Theory', 'Synthetic Control'),
+          Legend.position = 'topright', Ylim = c(0,2))
+abline(v = 2014)
+dev.off()
+
 # Plotting the Synth results for SJR
 
 postscript('C:/Users/User/Documents/Data/resignations/IJSS.SJR.path.eps')
@@ -299,7 +362,7 @@ dev.off()
 postscript('C:/Users/User/Documents/Data/resignations/CMAJ.SJR.path.eps')
 path.plot(synth.res = CMAJ.synth.out.SJR, dataprep.res = CMAJ.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
           Xlab = 'Year', Legend = c('CMAJ', 'Synthetic Control'),
-          Legend.position = 'top', Ylim = c(0,10))
+          Legend.position = 'topright', Ylim = c(0,3))
 abline(v = 2006)
 dev.off()
 
@@ -324,6 +387,21 @@ path.plot(synth.res = JLA.synth.out.SJR, dataprep.res = JLA.synth.data.SJR, Ylab
 abline(v = 2013)
 dev.off()
 
+
+postscript('C:/Users/User/Documents/Data/resignations/LIN.SJR.path.eps')
+path.plot(synth.res = LIN.synth.out.SJR, dataprep.res = LIN.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
+          Xlab = 'Year', Legend = c('Lingua', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,2))
+abline(v = 2015)
+dev.off()
+
+postscript('C:/Users/User/Documents/Data/resignations/JK.SJR.path.eps')
+path.plot(synth.res = JK.synth.out.SJR, dataprep.res = JK.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
+          Xlab = 'Year', Legend = c('J. of K-Theory', 'Synthetic Control'),
+          Legend.position = 'topright', Ylim = c(0,2))
+abline(v = 2014)
+dev.off()
+
 # Plotting the gaps for citations
 
 postscript('C:/Users/User/Documents/Data/resignations/IJSS.cites.gaps.eps')
@@ -344,6 +422,14 @@ dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/JLA.cites.gaps.eps')
 gaps.plot(synth.res = JLA.synth.out.cites, dataprep.res = JLA.synth.data.cites)
+dev.off()
+
+postscript('C:/Users/User/Documents/Data/resignations/LIN.cites.gaps.eps')
+gaps.plot(synth.res = LIN.synth.out.cites, dataprep.res = LIN.synth.data.cites)
+dev.off()
+
+postscript('C:/Users/User/Documents/Data/resignations/JK.cites.gaps.eps')
+gaps.plot(synth.res = JK.synth.out.cites, dataprep.res = JK.synth.data.cites)
 dev.off()
 
 # Plotting the gaps for SJR
@@ -368,6 +454,14 @@ postscript('C:/Users/User/Documents/Data/resignations/JLA.SJR.gaps.eps')
 gaps.plot(synth.res = JLA.synth.out.SJR, dataprep.res = JLA.synth.data.SJR)
 dev.off()
 
+postscript('C:/Users/User/Documents/Data/resignations/LIN.SJR.gaps.eps')
+gaps.plot(synth.res = LIN.synth.out.SJR, dataprep.res = LIN.synth.data.SJR)
+dev.off()
+
+postscript('C:/Users/User/Documents/Data/resignations/JK.SJR.gaps.eps')
+gaps.plot(synth.res = JK.synth.out.SJR, dataprep.res = JK.synth.data.SJR)
+dev.off()
+
 # Placebo testing
 
 
@@ -378,7 +472,7 @@ dev.off()
 
 ### NEED TO FINISH WRITING THE CODE FOR gaps.plot PLOTS AND RUN THESE --- MISSING TITLES
 
-
+### NEED TO ADD LINGUA AND JOURNAL OF K-THEORY (THE LATTER HAS SOME YEAR RESTRICTIONS == 2009:2017)
 
 
 
