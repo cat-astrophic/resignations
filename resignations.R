@@ -40,7 +40,7 @@ main_df <- main_df[which(main_df$Type == 'journal'),]
 cat_cleaner <- function(cat_name) {
   
   ifelse(substr(cat_name,nchar(cat_name),nchar(cat_name)) == ')', clean_cat <- substr(cat_name,1,nchar(cat_name)-5), clean_cat <- substr(cat_name,1,nchar(cat_name)-4))
-
+  
   return(clean_cat)
   
 }
@@ -112,7 +112,7 @@ balanced_panel <- function(df,nyrs,idtop) {
   new_df$Cites...Doc...2years. <- as.numeric(new_df$Cites...Doc...2years.)
   new_df$Ref....Doc. <- as.numeric(new_df$Ref....Doc.)
   new_df$ID <- as.numeric(new_df$ID)
-    
+  
   return(new_df)
   
 }
@@ -164,76 +164,171 @@ jla2008 <- c(11184, 4700152795, 'Journal of Library Administration', 'journal',
 JLA <- rbind(JLA, setNames(jla2008, names(JLA)))
 JLA <- balanced_panel(JLA,20,FALSE)
 
-# Creating the input data objects for Synth using dataprep()
+# Predictors for Synth
 
-preds <- c('Total.Docs.1year', 'Total.Docs...3years.', 'Total.Refs.', 'Total.Cites..3years.',
+preds.SJR <- c('Total.Docs.1year', 'Total.Docs...3years.', 'Total.Refs.', 'Total.Cites..3years.',
            'Citable.Docs...3years.', 'Cites...Doc...2years.', 'Ref....Doc.')
 
-IJSS.synth.data <- dataprep(foo = IJSS, predictors = preds, predictors.op = c('mean'), dependent = c('SJR'),
-                          unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 30,
-                          controls.identifier = c(1:29, 31:488), time.predictors.prior = c(1999:2005),
-                          time.optimize.ssr = c(1999:2005), unit.names.variable = 'Title', time.plot = c(1999:2018))
+preds.cites <- c('Total.Docs.1year', 'Total.Docs...3years.', 'Total.Refs.', 'Total.Cites..3years.',
+               'Citable.Docs...3years.', 'Ref....Doc.')
 
-CMAJ.synth.data <- dataprep(foo = CMAJ, predictors = preds, predictors.op = c('mean'), dependent = c('SJR'),
-                          unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 309,
-                          controls.identifier = c(1:308, 310:898), time.predictors.prior = c(1999:2006),
-                          time.optimize.ssr = c(1999:2006), unit.names.variable = 'Title', time.plot = c(1999:2018))
+# Creating the input data objects for Synth using dataprep() and citaitons predictors
 
-TOP.synth.data <- dataprep(foo = TOP, predictors = preds, predictors.op = c('mean'), dependent = c('SJR'),
-                          unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 4,
-                          controls.identifier = c(1:3, 5:27), time.predictors.prior = c(1999:2006),
-                          time.optimize.ssr = c(1999:2006), unit.names.variable = 'Title', time.plot = c(1999:2012))
+IJSS.synth.data.cites <- dataprep(foo = IJSS, predictors = preds.cites, predictors.op = c('mean'),
+                                dependent = c('Cites...Doc...2years.'), unit.variable = c('ID'), time.variable = c('Year'),
+                                treatment.identifier = 30, controls.identifier = c(1:29, 31:448), time.predictors.prior = c(1999:2005),
+                                time.optimize.ssr = c(1999:2005), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
-OE.synth.data <- dataprep(foo = OE, predictors = preds, predictors.op = c('mean'), dependent = c('SJR'),
-                          unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 106,
-                          controls.identifier = c(1:105, 107:119), time.predictors.prior = c(1999:2012),
-                          time.optimize.ssr = c(1999:2012), unit.names.variable = 'Title', time.plot = c(1999:2018))
+CMAJ.synth.data.cites <- dataprep(foo = CMAJ, predictors = preds.cites, predictors.op = c('mean'), dependent = c('Cites...Doc...2years.'),
+                                unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 309,
+                                controls.identifier = c(1:308), time.predictors.prior = c(1999:2006),
+                                time.optimize.ssr = c(1999:2006), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
-JLA.synth.data <- dataprep(foo = JLA, predictors = preds, predictors.op = c('mean'), dependent = c('SJR'),
-                          unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 57,
-                          controls.identifier = c(1:56), time.predictors.prior = c(1999:2013),
-                          time.optimize.ssr = c(1999:2013), unit.names.variable = 'Title', time.plot = c(1999:2018))
+TOP.synth.data.cites <- dataprep(foo = TOP, predictors = preds.cites, predictors.op = c('mean'), dependent = c('Cites...Doc...2years.'),
+                              unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 4,
+                              controls.identifier = c(1:3, 5:27), time.predictors.prior = c(1999:2006),
+                              time.optimize.ssr = c(1999:2006), unit.names.variable = 'Title', time.plot = c(1999:2012))
 
-# Using Synth to create synthetic controls for each treatment group 
+OE.synth.data.cites <- dataprep(foo = OE, predictors = preds.cites, predictors.op = c('mean'), dependent = c('Cites...Doc...2years.'),
+                              unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 106,
+                              controls.identifier = c(1:105, 107:119), time.predictors.prior = c(1999:2012),
+                              time.optimize.ssr = c(1999:2012), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
-IJSS.synth.out <- synth(data.prep.obj = IJSS.synth.data)
+JLA.synth.data.cites <- dataprep(foo = JLA, predictors = preds.cites, predictors.op = c('mean'), dependent = c('Cites...Doc...2years.'),
+                              unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 57,
+                              controls.identifier = c(1:56), time.predictors.prior = c(1999:2013),
+                              time.optimize.ssr = c(1999:2013), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
-CMAJ.synth.out <- synth(data.prep.obj = CMAJ.synth.data)
+# Creating the input data objects for Synth using dataprep() and SJR predictors
 
-TOP.synth.out <- synth(data.prep.obj = TOP.synth.data)
+IJSS.synth.data.SJR <- dataprep(foo = IJSS, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
+                                unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 30,
+                                controls.identifier = c(1:29, 31:448), time.predictors.prior = c(1999:2005),
+                                time.optimize.ssr = c(1999:2005), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
-OE.synth.out <- synth(data.prep.obj = OE.synth.data)
+CMAJ.synth.data.SJR <- dataprep(foo = CMAJ, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
+                                unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 309,
+                                controls.identifier = c(1:308), time.predictors.prior = c(1999:2006),
+                                time.optimize.ssr = c(1999:2006), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
-JLA.synth.out <- synth(data.prep.obj = JLA.synth.data)
+TOP.synth.data.SJR <- dataprep(foo = TOP, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
+                               unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 4,
+                               controls.identifier = c(1:3, 5:27), time.predictors.prior = c(1999:2006),
+                               time.optimize.ssr = c(1999:2006), unit.names.variable = 'Title', time.plot = c(1999:2012))
 
-# Synth results
+OE.synth.data.SJR <- dataprep(foo = OE, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
+                              unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 106,
+                              controls.identifier = c(1:105, 107:119), time.predictors.prior = c(1999:2012),
+                              time.optimize.ssr = c(1999:2012), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
+JLA.synth.data.SJR <- dataprep(foo = JLA, predictors = preds.SJR, predictors.op = c('mean'), dependent = c('SJR'),
+                               unit.variable = c('ID'), time.variable = c('Year'), treatment.identifier = 57,
+                               controls.identifier = c(1:56), time.predictors.prior = c(1999:2013),
+                               time.optimize.ssr = c(1999:2013), unit.names.variable = 'Title', time.plot = c(1999:2018))
 
+# Using Synth to create synthetic controls for each treatment group for citations
 
+IJSS.synth.out.cites <- synth(data.prep.obj = IJSS.synth.data.cites)
 
+CMAJ.synth.out.cites <- synth(data.prep.obj = CMAJ.synth.data.cites)
 
+TOP.synth.out.cites <- synth(data.prep.obj = TOP.synth.data.cites)
 
+OE.synth.out.cites <- synth(data.prep.obj = OE.synth.data.cites)
 
+JLA.synth.out.cites <- synth(data.prep.obj = JLA.synth.data.cites)
 
+# Using Synth to create synthetic controls for each treatment group for citations
 
+IJSS.synth.out.SJR <- synth(data.prep.obj = IJSS.synth.data.SJR)
 
+CMAJ.synth.out.SJR <- synth(data.prep.obj = CMAJ.synth.data.SJR)
 
+TOP.synth.out.SJR <- synth(data.prep.obj = TOP.synth.data.SJR)
 
+OE.synth.out.SJR <- synth(data.prep.obj = OE.synth.data.SJR)
 
+JLA.synth.out.SJR <- synth(data.prep.obj = JLA.synth.data.SJR)
 
+# Plotting the Synth results for citations
 
+path.plot(synth.res = IJSS.synth.out.cites, dataprep.res = IJSS.synth.data.cites, Ylab = 'Citations per Document',
+          Xlab = 'Year', Legend = c('Intl. J. of Solids and Structures', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,4))
+abline(v = 2005)
 
+path.plot(synth.res = CMAJ.synth.out.cites, dataprep.res = CMAJ.synth.data.cites, Ylab = 'Citations per Document',
+          Xlab = 'Year', Legend = c('CMAJ', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,10))
+abline(v = 2006)
 
+path.plot(synth.res = TOP.synth.out.cites, dataprep.res = TOP.synth.data.cites, Ylab = 'Citations per Document',
+          Xlab = 'Year', Legend = c('Topology', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,4))
+abline(v = 2006)
 
+path.plot(synth.res =OE.synth.out.cites, dataprep.res = OE.synth.data.cites, Ylab = 'Citations per Document',
+          Xlab = 'Year', Legend = c('Organization & Environment', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,10))
+abline(v = 2012)
 
+path.plot(synth.res = JLA.synth.out.cites, dataprep.res = JLA.synth.data.cites, Ylab = 'Citations per Document',
+          Xlab = 'Year', Legend = c('J. Library Administration', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,2))
+abline(v = 2013)
 
+# Plotting the Synth results for SJR
 
+path.plot(synth.res = IJSS.synth.out.SJR, dataprep.res = IJSS.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
+          Xlab = 'Year', Legend = c('Intl. J. of Solids and Structures', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,4))
+abline(v = 2005)
 
+path.plot(synth.res = CMAJ.synth.out.SJR, dataprep.res = CMAJ.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
+          Xlab = 'Year', Legend = c('CMAJ', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,10))
+abline(v = 2006)
 
+path.plot(synth.res = TOP.synth.out.SJR, dataprep.res = TOP.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
+          Xlab = 'Year', Legend = c('Topology', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,4))
+abline(v = 2006)
 
+path.plot(synth.res =OE.synth.out.SJR, dataprep.res = OE.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
+          Xlab = 'Year', Legend = c('Organization & Environment', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,10))
+abline(v = 2012)
 
+path.plot(synth.res = JLA.synth.out.SJR, dataprep.res = JLA.synth.data.SJR, Ylab = 'SJR Journal Quality Index',
+          Xlab = 'Year', Legend = c('J. Library Administration', 'Synthetic Control'),
+          Legend.position = 'top', Ylim = c(0,2))
+abline(v = 2013)
 
-# """ FOR ROBUSTNESS CHECKS I CAN USE ONLY ONE CATEGORY TO FIND CONTROLS AND SEE IF THE RESULTS ARE CONSISTENT """
+# Plotting the gaps for citations
+
+gaps.plot(synth.res = IJSS.synth.out.cites, dataprep.res = IJSS.synth.data.cites)
+
+gaps.plot(synth.res = CMAJ.synth.out.cites, dataprep.res = CMAJ.synth.data.cites)
+
+gaps.plot(synth.res = TOP.synth.out.cites, dataprep.res = TOP.synth.data.cites)
+
+gaps.plot(synth.res = OE.synth.out.cites, dataprep.res = OE.synth.data.cites)
+
+gaps.plot(synth.res = JLA.synth.out.cites, dataprep.res = JLA.synth.data.cites)
+
+# Plotting the gaps for SJR
+
+gaps.plot(synth.res = IJSS.synth.out.SJR, dataprep.res = IJSS.synth.data.SJR)
+
+gaps.plot(synth.res = CMAJ.synth.out.SJR, dataprep.res = CMAJ.synth.data.SJR)
+
+gaps.plot(synth.res = TOP.synth.out.SJR, dataprep.res = TOP.synth.data.SJR)
+
+gaps.plot(synth.res = OE.synth.out.SJR, dataprep.res = OE.synth.data.SJR)
+
+gaps.plot(synth.res = JLA.synth.out.SJR, dataprep.res = JLA.synth.data.SJR)
+
+# Placebo testing
 
 
 
