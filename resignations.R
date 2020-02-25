@@ -405,61 +405,61 @@ dev.off()
 # Plotting the gaps for citations
 
 postscript('C:/Users/User/Documents/Data/resignations/IJSS.cites.gaps.eps')
-gaps.plot(synth.res = IJSS.synth.out.cites, dataprep.res = IJSS.synth.data.cites)
+gaps.plot(synth.res = IJSS.synth.out.cites, dataprep.res = IJSS.synth.data.cites, Ylab = 'IJSS')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/CMAJ.cites.gaps.eps')
-gaps.plot(synth.res = CMAJ.synth.out.cites, dataprep.res = CMAJ.synth.data.cites)
+gaps.plot(synth.res = CMAJ.synth.out.cites, dataprep.res = CMAJ.synth.data.cites, Ylab = 'CMAJ')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/TOP.cites.gaps.eps')
-gaps.plot(synth.res = TOP.synth.out.cites, dataprep.res = TOP.synth.data.cites)
+gaps.plot(synth.res = TOP.synth.out.cites, dataprep.res = TOP.synth.data.cites, Ylab = 'Topology')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/OE.cites.gaps.eps')
-gaps.plot(synth.res = OE.synth.out.cites, dataprep.res = OE.synth.data.cites)
+gaps.plot(synth.res = OE.synth.out.cites, dataprep.res = OE.synth.data.cites, Ylab = 'Org. & Environ.')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/JLA.cites.gaps.eps')
-gaps.plot(synth.res = JLA.synth.out.cites, dataprep.res = JLA.synth.data.cites)
+gaps.plot(synth.res = JLA.synth.out.cites, dataprep.res = JLA.synth.data.cites, Ylab = 'J. Library Admin.')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/LIN.cites.gaps.eps')
-gaps.plot(synth.res = LIN.synth.out.cites, dataprep.res = LIN.synth.data.cites)
+gaps.plot(synth.res = LIN.synth.out.cites, dataprep.res = LIN.synth.data.cites, Ylab = 'Lingua')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/JK.cites.gaps.eps')
-gaps.plot(synth.res = JK.synth.out.cites, dataprep.res = JK.synth.data.cites)
+gaps.plot(synth.res = JK.synth.out.cites, dataprep.res = JK.synth.data.cites, Ylab = 'J. K-Theory')
 dev.off()
 
 # Plotting the gaps for SJR
 
 postscript('C:/Users/User/Documents/Data/resignations/IJSS.SJR.gaps.eps')
-gaps.plot(synth.res = IJSS.synth.out.SJR, dataprep.res = IJSS.synth.data.SJR)
+gaps.plot(synth.res = IJSS.synth.out.SJR, dataprep.res = IJSS.synth.data.SJR, Ylab = 'IJSS')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/CMAJ.SJR.gaps.eps')
-gaps.plot(synth.res = CMAJ.synth.out.SJR, dataprep.res = CMAJ.synth.data.SJR)
+gaps.plot(synth.res = CMAJ.synth.out.SJR, dataprep.res = CMAJ.synth.data.SJR, Ylab = 'CMAJ')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/TOP.SJR.gaps.eps')
-gaps.plot(synth.res = TOP.synth.out.SJR, dataprep.res = TOP.synth.data.SJR)
+gaps.plot(synth.res = TOP.synth.out.SJR, dataprep.res = TOP.synth.data.SJR, Ylab = 'Topology')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/OE.SJR.gaps.eps')
-gaps.plot(synth.res = OE.synth.out.SJR, dataprep.res = OE.synth.data.SJR)
+gaps.plot(synth.res = OE.synth.out.SJR, dataprep.res = OE.synth.data.SJR, Ylab = 'Org. & Environ.')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/JLA.SJR.gaps.eps')
-gaps.plot(synth.res = JLA.synth.out.SJR, dataprep.res = JLA.synth.data.SJR)
+gaps.plot(synth.res = JLA.synth.out.SJR, dataprep.res = JLA.synth.data.SJR, Ylab = 'J. Library Admin.')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/LIN.SJR.gaps.eps')
-gaps.plot(synth.res = LIN.synth.out.SJR, dataprep.res = LIN.synth.data.SJR)
+gaps.plot(synth.res = LIN.synth.out.SJR, dataprep.res = LIN.synth.data.SJR, Ylab = 'Lingua')
 dev.off()
 
 postscript('C:/Users/User/Documents/Data/resignations/JK.SJR.gaps.eps')
-gaps.plot(synth.res = JK.synth.out.SJR, dataprep.res = JK.synth.data.SJR)
+gaps.plot(synth.res = JK.synth.out.SJR, dataprep.res = JK.synth.data.SJR, Ylab = 'J. K-Theory')
 dev.off()
 
 # Placebo testing
