@@ -465,6 +465,7 @@ dev.off()
 # Placebo testing
 
 
+#### note to self : see the regional paper from week 5e(?) for formatting results
 
 
 
